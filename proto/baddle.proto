@@ -1,0 +1,15 @@
+syntax = "proto3";
+option go_package = "./rpc";
+
+service Baddle {
+  rpc GetWord(GetWordReq) returns (GetWordResp);
+}
+
+message GetWordReq {
+  string user = 1;
+  string room = 2;
+}
+
+message GetWordResp {
+  string word = 1;
+}
