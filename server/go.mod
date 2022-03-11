@@ -1,4 +1,4 @@
-	module github.com/Pillaged/Baddle/server
+module github.com/Pillaged/Baddle/server
 
 go 1.17
 
