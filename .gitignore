@@ -1,3 +1,5 @@
+**/__pycache__
 **/*.pem
 **/*.idea
 **/*.exe
+baddle_server
