@@ -12,8 +12,3 @@ chmod -R 700 baddle_server
 ./baddle_server
 
 http://ec2-34-214-141-162.us-west-2.compute.amazonaws.com:2441/headers
-
-protoc --go_out server --twirp_out server --proto_path=./proto baddle.proto
-
-http://ec2-34-214-141-162.us-west-2.compute.amazonaws.com:2441/headers
->>>>>>> 2357801be47a03b6dffd41e89b073672345de359
