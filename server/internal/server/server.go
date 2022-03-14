@@ -21,5 +21,7 @@ func New(cfg *Config) *Server {
 }
 
 func (s *Server) GetWord(ctx context.Context, req *rpc.GetWordReq) (*rpc.GetWordResp, error) {
-	panic("implement me")
+	return &rpc.GetWordResp{
+		Word: "Hello World!",
+	}, nil
 }
