@@ -1,4 +1,4 @@
-from cmath import exp
+from cmath import e, exp
 from unidecode import unidecode
 from random import choice
 from tkinter import *
@@ -26,7 +26,7 @@ class Wordle:
         self.color_right = "#62A87C"  # Correct letter
         self.color_place = "#F9DB6D"  # Wrong location
         self.color_wrong = "#312a2c"  # Not in word #615458
-        self.color_wrongFG = "black"  ##504a4b?
+        self.color_wrongFG = "black"  # 504a4b?
         self.color_empty = "#615458"  # Not typed
         self.color_kb = "#231E1A"
         self.color_end_box = "#35273B"  # 34, 19, choice of rand end msg
@@ -78,21 +78,24 @@ class Wordle:
         )
 
         self.canvas.create_rectangle(
-            x1, y1, x2, y2, outline="black", fill="blue", tags=num
+            x1, y1, x2, y2, outline="black", fill="blue", tag="pows" + str(letter)
         )
         # self.write_letters((x2 + x1) / 2, (y1 + y2) / 2, letter, self.box_height * 0.7)
 
-        menu_item = self.canvas.create_text(
+        self.canvas.create_text(
             (x2 + x1) / 2,
             (y1 + y2) / 2,
-            text=num,
+            text=letter,
             font=(self.font, int(self.kb_box_height * 0.5)),
             fill="white",
-            tags=num,
+            tag="pows" + str(letter),
         )
-
+        print("pows" + str(letter))
         self.canvas.tag_bind(
-            menu_item, "<Button-1>", lambda e, var=letter: self.kb_input(var)
+            ("pows" + str(letter)),
+            "<Button-1>",
+            lambda e, var=str(letter): self.kb_input(letter=var),
+            add=True,
         )
 
     def powerups(self, numb, coinage=4000):
@@ -194,7 +197,8 @@ class Wordle:
         if age == "new":
             self.root.mainloop()
 
-    def create_letter_boxes(self):  # Number of rows to be tested for game length.
+    # Number of rows to be tested for game length.
+    def create_letter_boxes(self):
         for y in range(self.max_rows + 2):
             for x in range(5):
                 self.new_pos_x = self.pos_x + ((self.box_width + self.gap) * x)
@@ -227,9 +231,10 @@ class Wordle:
     def kb_input(self, event=None, letter=None):
         if self.game_on:
             if letter is None:
+                print(type(event), event.char.upper(), "This is the test line")
                 letter = unidecode(event.char.upper())
-                if letter.isdigit():
-                    self.powerups(int(letter), self.monay)
+            if letter.isdigit():
+                self.powerups(int(letter), self.monay)
             if self.column_counter == 0:
                 self.guess = ""
             if (
