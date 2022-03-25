@@ -3,6 +3,8 @@ option go_package = "./rpc";
 
 service Baddle {
   rpc GetWord(GetWordReq) returns (GetWordResp);
+  rpc GetGameState(GetGameStateReq) returns (GetGameStateResp);
+  rpc JoinRoom(JoinRoomReq) returns (JoinRoomResp);
 }
 
 message GetWordReq {
@@ -13,3 +15,19 @@ message GetWordReq {
 message GetWordResp {
   string word = 1;
 }
+
+message GetGameStateReq {
+  string user = 1;
+  string room = 2;
+}
+
+message GetGameStateResp {
+  repeated string opponent_words_completed = 1;
+}
+
+message JoinRoomReq {
+  string user = 1;
+  string room = 2;
+}
+
+message JoinRoomResp {}

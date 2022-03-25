@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Pillaged/Baddle/server/internal/game"
 	"github.com/Pillaged/Baddle/server/internal/server"
+	"github.com/Pillaged/Baddle/server/internal/words"
 	"github.com/Pillaged/Baddle/server/rpc"
 	"github.com/twitchtv/twirp"
 )
@@ -29,7 +31,18 @@ func NewLoggingServerHooks() *twirp.ServerHooks {
 }
 
 func main() {
-	service := server.New(&server.Config{})
+	wordGetter, err := words.New()
+	if err != nil {
+		panic("could not start word getter")
+	}
+
+	game := game.New()
+
+	service := server.New(&server.Config{
+		WordGetter: wordGetter,
+		Game:       game,
+	})
+
 	server := rpc.NewBaddleServer(service, NewLoggingServerHooks())
 
 	if err := http.ListenAndServe(":2441", server); err != nil {

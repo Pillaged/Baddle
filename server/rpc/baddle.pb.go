@@ -122,6 +122,201 @@ func (x *GetWordResp) GetWord() string {
 	return ""
 }
 
+type GetGameStateReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	User string `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	Room string `protobuf:"bytes,2,opt,name=room,proto3" json:"room,omitempty"`
+}
+
+func (x *GetGameStateReq) Reset() {
+	*x = GetGameStateReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_baddle_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetGameStateReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameStateReq) ProtoMessage() {}
+
+func (x *GetGameStateReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_baddle_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameStateReq.ProtoReflect.Descriptor instead.
+func (*GetGameStateReq) Descriptor() ([]byte, []int) {
+	return file_proto_baddle_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetGameStateReq) GetUser() string {
+	if x != nil {
+		return x.User
+	}
+	return ""
+}
+
+func (x *GetGameStateReq) GetRoom() string {
+	if x != nil {
+		return x.Room
+	}
+	return ""
+}
+
+type GetGameStateResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OpponentWordsCompleted []string `protobuf:"bytes,1,rep,name=opponent_words_completed,json=opponentWordsCompleted,proto3" json:"opponent_words_completed,omitempty"`
+}
+
+func (x *GetGameStateResp) Reset() {
+	*x = GetGameStateResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_baddle_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetGameStateResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameStateResp) ProtoMessage() {}
+
+func (x *GetGameStateResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_baddle_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameStateResp.ProtoReflect.Descriptor instead.
+func (*GetGameStateResp) Descriptor() ([]byte, []int) {
+	return file_proto_baddle_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetGameStateResp) GetOpponentWordsCompleted() []string {
+	if x != nil {
+		return x.OpponentWordsCompleted
+	}
+	return nil
+}
+
+type JoinRoomReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	User string `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	Room string `protobuf:"bytes,2,opt,name=room,proto3" json:"room,omitempty"`
+}
+
+func (x *JoinRoomReq) Reset() {
+	*x = JoinRoomReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_baddle_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *JoinRoomReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinRoomReq) ProtoMessage() {}
+
+func (x *JoinRoomReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_baddle_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinRoomReq.ProtoReflect.Descriptor instead.
+func (*JoinRoomReq) Descriptor() ([]byte, []int) {
+	return file_proto_baddle_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *JoinRoomReq) GetUser() string {
+	if x != nil {
+		return x.User
+	}
+	return ""
+}
+
+func (x *JoinRoomReq) GetRoom() string {
+	if x != nil {
+		return x.Room
+	}
+	return ""
+}
+
+type JoinRoomResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *JoinRoomResp) Reset() {
+	*x = JoinRoomResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_baddle_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *JoinRoomResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinRoomResp) ProtoMessage() {}
+
+func (x *JoinRoomResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_baddle_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinRoomResp.ProtoReflect.Descriptor instead.
+func (*JoinRoomResp) Descriptor() ([]byte, []int) {
+	return file_proto_baddle_proto_rawDescGZIP(), []int{5}
+}
+
 var File_proto_baddle_proto protoreflect.FileDescriptor
 
 var file_proto_baddle_proto_rawDesc = []byte{
@@ -131,11 +326,30 @@ var file_proto_baddle_proto_rawDesc = []byte{
 	0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6f, 0x6d, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x72, 0x6f, 0x6f, 0x6d, 0x22, 0x21, 0x0a, 0x0b, 0x47, 0x65,
 	0x74, 0x57, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x77, 0x6f, 0x72,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x77, 0x6f, 0x72, 0x64, 0x32, 0x2e, 0x0a,
-	0x06, 0x42, 0x61, 0x64, 0x64, 0x6c, 0x65, 0x12, 0x24, 0x0a, 0x07, 0x47, 0x65, 0x74, 0x57, 0x6f,
-	0x72, 0x64, 0x12, 0x0b, 0x2e, 0x47, 0x65, 0x74, 0x57, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x71, 0x1a,
-	0x0c, 0x2e, 0x47, 0x65, 0x74, 0x57, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x42, 0x07, 0x5a,
-	0x05, 0x2e, 0x2f, 0x72, 0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x39, 0x0a,
+	0x0f, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71,
+	0x12, 0x12, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x75, 0x73, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x72, 0x6f, 0x6f, 0x6d, 0x22, 0x4c, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x47,
+	0x61, 0x6d, 0x65, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x38, 0x0a, 0x18,
+	0x6f, 0x70, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x5f, 0x77, 0x6f, 0x72, 0x64, 0x73, 0x5f, 0x63,
+	0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x16,
+	0x6f, 0x70, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x57, 0x6f, 0x72, 0x64, 0x73, 0x43, 0x6f, 0x6d,
+	0x70, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x22, 0x35, 0x0a, 0x0b, 0x4a, 0x6f, 0x69, 0x6e, 0x52, 0x6f,
+	0x6f, 0x6d, 0x52, 0x65, 0x71, 0x12, 0x12, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6f,
+	0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x72, 0x6f, 0x6f, 0x6d, 0x22, 0x0e, 0x0a,
+	0x0c, 0x4a, 0x6f, 0x69, 0x6e, 0x52, 0x6f, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x32, 0x8c, 0x01,
+	0x0a, 0x06, 0x42, 0x61, 0x64, 0x64, 0x6c, 0x65, 0x12, 0x24, 0x0a, 0x07, 0x47, 0x65, 0x74, 0x57,
+	0x6f, 0x72, 0x64, 0x12, 0x0b, 0x2e, 0x47, 0x65, 0x74, 0x57, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x71,
+	0x1a, 0x0c, 0x2e, 0x47, 0x65, 0x74, 0x57, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x12, 0x33,
+	0x0a, 0x0c, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x10,
+	0x2e, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71,
+	0x1a, 0x11, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52,
+	0x65, 0x73, 0x70, 0x12, 0x27, 0x0a, 0x08, 0x4a, 0x6f, 0x69, 0x6e, 0x52, 0x6f, 0x6f, 0x6d, 0x12,
+	0x0c, 0x2e, 0x4a, 0x6f, 0x69, 0x6e, 0x52, 0x6f, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x1a, 0x0d, 0x2e,
+	0x4a, 0x6f, 0x69, 0x6e, 0x52, 0x6f, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x42, 0x07, 0x5a, 0x05,
+	0x2e, 0x2f, 0x72, 0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -150,16 +364,24 @@ func file_proto_baddle_proto_rawDescGZIP() []byte {
 	return file_proto_baddle_proto_rawDescData
 }
 
-var file_proto_baddle_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_baddle_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_baddle_proto_goTypes = []interface{}{
-	(*GetWordReq)(nil),  // 0: GetWordReq
-	(*GetWordResp)(nil), // 1: GetWordResp
+	(*GetWordReq)(nil),       // 0: GetWordReq
+	(*GetWordResp)(nil),      // 1: GetWordResp
+	(*GetGameStateReq)(nil),  // 2: GetGameStateReq
+	(*GetGameStateResp)(nil), // 3: GetGameStateResp
+	(*JoinRoomReq)(nil),      // 4: JoinRoomReq
+	(*JoinRoomResp)(nil),     // 5: JoinRoomResp
 }
 var file_proto_baddle_proto_depIdxs = []int32{
 	0, // 0: Baddle.GetWord:input_type -> GetWordReq
-	1, // 1: Baddle.GetWord:output_type -> GetWordResp
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	2, // 1: Baddle.GetGameState:input_type -> GetGameStateReq
+	4, // 2: Baddle.JoinRoom:input_type -> JoinRoomReq
+	1, // 3: Baddle.GetWord:output_type -> GetWordResp
+	3, // 4: Baddle.GetGameState:output_type -> GetGameStateResp
+	5, // 5: Baddle.JoinRoom:output_type -> JoinRoomResp
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -195,6 +417,54 @@ func file_proto_baddle_proto_init() {
 				return nil
 			}
 		}
+		file_proto_baddle_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetGameStateReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_baddle_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetGameStateResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_baddle_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*JoinRoomReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_baddle_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*JoinRoomResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -202,7 +472,7 @@ func file_proto_baddle_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_baddle_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

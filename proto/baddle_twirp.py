@@ -23,6 +23,20 @@ class BaddleServer(TwirpServer):
 				input=_sym_db.GetSymbol("GetWordReq"),
 				output=_sym_db.GetSymbol("GetWordResp"),
 			),
+			"GetGameState": Endpoint(
+				service_name="Baddle",
+				name="GetGameState",
+				function=getattr(service, "GetGameState"),
+				input=_sym_db.GetSymbol("GetGameStateReq"),
+				output=_sym_db.GetSymbol("GetGameStateResp"),
+			),
+			"JoinRoom": Endpoint(
+				service_name="Baddle",
+				name="JoinRoom",
+				function=getattr(service, "JoinRoom"),
+				input=_sym_db.GetSymbol("JoinRoomReq"),
+				output=_sym_db.GetSymbol("JoinRoomResp"),
+			),
 		}
 
 class BaddleClient(TwirpClient):
@@ -33,5 +47,23 @@ class BaddleClient(TwirpClient):
 			ctx=ctx,
 			request=request,
 			response_obj=_sym_db.GetSymbol("GetWordResp"),
+			**kwargs,
+		)
+
+	def GetGameState(self, *args, ctx, request, server_path_prefix="/twirp", **kwargs):
+		return self._make_request(
+			url=F"{server_path_prefix}/Baddle/GetGameState",
+			ctx=ctx,
+			request=request,
+			response_obj=_sym_db.GetSymbol("GetGameStateResp"),
+			**kwargs,
+		)
+
+	def JoinRoom(self, *args, ctx, request, server_path_prefix="/twirp", **kwargs):
+		return self._make_request(
+			url=F"{server_path_prefix}/Baddle/JoinRoom",
+			ctx=ctx,
+			request=request,
+			response_obj=_sym_db.GetSymbol("JoinRoomResp"),
 			**kwargs,
 		)
