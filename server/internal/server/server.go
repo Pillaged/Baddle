@@ -28,6 +28,7 @@ type WordGetter interface {
 type Game interface {
 	JoinRoom(roomId string, userId string) error
 	GetOpponentWords(roomId string, userId string) ([]string, error)
+	Lose(roomId string, userId string) error
 }
 
 func New(cfg *Config) *Server {
@@ -59,4 +60,12 @@ func (s *Server) JoinRoom(ctx context.Context, req *rpc.JoinRoomReq) (*rpc.JoinR
 		return nil, err
 	}
 	return &rpc.JoinRoomResp{}, nil
+}
+
+func (s *Server) Lose(ctx context.Context, req *rpc.LoseReq) (*rpc.LoseResp, error) {
+	err := s.game.Lose(req.Room, req.User)
+	if err != nil {
+		return nil, err
+	}
+	return &rpc.LoseResp{}, nil
 }

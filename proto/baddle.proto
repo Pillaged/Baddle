@@ -5,6 +5,7 @@ service Baddle {
   rpc GetWord(GetWordReq) returns (GetWordResp);
   rpc GetGameState(GetGameStateReq) returns (GetGameStateResp);
   rpc JoinRoom(JoinRoomReq) returns (JoinRoomResp);
+  rpc Lose(LoseReq) returns (LoseResp);
 }
 
 message GetWordReq {
@@ -23,6 +24,7 @@ message GetGameStateReq {
 
 message GetGameStateResp {
   repeated string opponent_words_completed = 1;
+  bool is_lost = 2;  
 }
 
 message JoinRoomReq {
@@ -31,3 +33,10 @@ message JoinRoomReq {
 }
 
 message JoinRoomResp {}
+
+message LoseReq {
+  string user = 1;
+  string room = 2;
+}
+
+message LoseResp {}

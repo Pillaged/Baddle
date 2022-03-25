@@ -1,6 +1,7 @@
 package game
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 )
@@ -63,23 +64,46 @@ func (g *Game) JoinRoom(roomId string, userId string) error {
 
 func (g *Game) GetOpponentWords(roomId string, userId string) ([]string, error) {
 	room := g.GetRoom(roomId)
-	if userId == room.playerOne {
-		room.lock.Lock()
-		defer room.lock.Unlock()
+	if room == nil {
+		return nil, errors.New("room does not exist")
+	}
+	room.lock.Lock()
+	defer room.lock.Unlock()
 
+	if userId == room.playerOne {
 		opponentWords := make([]string, len(room.playerTwoWords))
 		copy(opponentWords, room.playerTwoWords)
 		return opponentWords, nil
 	}
 
 	if userId == room.playerTwo {
-		room.lock.Lock()
-		defer room.lock.Unlock()
-
 		opponentWords := make([]string, len(room.playerTwoWords))
 		copy(opponentWords, room.playerOneWords)
 		return opponentWords, nil
 	}
 
 	return nil, fmt.Errorf("room: %s does not have user: %s", roomId, userId)
+}
+
+func (g *Game) Lose(roomId string, userId string) error {
+	room := g.GetRoom(roomId)
+	if room == nil {
+		return errors.New("room does not exist")
+	}
+	room.lock.Lock()
+	room.lock.Unlock()
+
+	room.playerLost = true
+	return nil
+}
+
+func (g *Game) IsLost(roomId string) (bool, error) {
+	room := g.GetRoom(roomId)
+	if room == nil {
+		return false, errors.New("room does not exist")
+	}
+	room.lock.Lock()
+	defer room.lock.Unlock()
+
+	return room.playerLost, nil
 }
