@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Pillaged/Baddle/server/internal/game"
 	"github.com/Pillaged/Baddle/server/internal/server"
 	"github.com/Pillaged/Baddle/server/internal/words"
 	"github.com/Pillaged/Baddle/server/rpc"
@@ -30,14 +31,16 @@ func NewLoggingServerHooks() *twirp.ServerHooks {
 }
 
 func main() {
-
 	wordGetter, err := words.New()
 	if err != nil {
 		panic("could not start word getter")
 	}
 
+	game := game.New()
+
 	service := server.New(&server.Config{
 		WordGetter: wordGetter,
+		Game:       game,
 	})
 
 	server := rpc.NewBaddleServer(service, NewLoggingServerHooks())

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'Z\005./rpc',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x12proto/baddle.proto\"(\n\nGetWordReq\x12\x0c\n\x04user\x18\x01 \x01(\t\x12\x0c\n\x04room\x18\x02 \x01(\t\"\x1b\n\x0bGetWordResp\x12\x0c\n\x04word\x18\x01 \x01(\t2.\n\x06\x42\x61\x64\x64le\x12$\n\x07GetWord\x12\x0b.GetWordReq\x1a\x0c.GetWordRespB\x07Z\x05./rpcb\x06proto3'
+  serialized_pb=b'\n\x12proto/baddle.proto\"(\n\nGetWordReq\x12\x0c\n\x04user\x18\x01 \x01(\t\x12\x0c\n\x04room\x18\x02 \x01(\t\"\x1b\n\x0bGetWordResp\x12\x0c\n\x04word\x18\x01 \x01(\t\"-\n\x0fGetGameStateReq\x12\x0c\n\x04user\x18\x01 \x01(\t\x12\x0c\n\x04room\x18\x02 \x01(\t\"4\n\x10GetGameStateResp\x12 \n\x18opponent_words_completed\x18\x01 \x03(\t\")\n\x0bJoinRoomReq\x12\x0c\n\x04user\x18\x01 \x01(\t\x12\x0c\n\x04room\x18\x02 \x01(\t\"\x0e\n\x0cJoinRoomResp2\x8c\x01\n\x06\x42\x61\x64\x64le\x12$\n\x07GetWord\x12\x0b.GetWordReq\x1a\x0c.GetWordResp\x12\x33\n\x0cGetGameState\x12\x10.GetGameStateReq\x1a\x11.GetGameStateResp\x12\'\n\x08JoinRoom\x12\x0c.JoinRoomReq\x1a\r.JoinRoomRespB\x07Z\x05./rpcb\x06proto3'
 )
 
 
@@ -95,8 +95,147 @@ _GETWORDRESP = _descriptor.Descriptor(
   serialized_end=91,
 )
 
+
+_GETGAMESTATEREQ = _descriptor.Descriptor(
+  name='GetGameStateReq',
+  full_name='GetGameStateReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user', full_name='GetGameStateReq.user', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='room', full_name='GetGameStateReq.room', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=93,
+  serialized_end=138,
+)
+
+
+_GETGAMESTATERESP = _descriptor.Descriptor(
+  name='GetGameStateResp',
+  full_name='GetGameStateResp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='opponent_words_completed', full_name='GetGameStateResp.opponent_words_completed', index=0,
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=140,
+  serialized_end=192,
+)
+
+
+_JOINROOMREQ = _descriptor.Descriptor(
+  name='JoinRoomReq',
+  full_name='JoinRoomReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user', full_name='JoinRoomReq.user', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='room', full_name='JoinRoomReq.room', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=194,
+  serialized_end=235,
+)
+
+
+_JOINROOMRESP = _descriptor.Descriptor(
+  name='JoinRoomResp',
+  full_name='JoinRoomResp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=237,
+  serialized_end=251,
+)
+
 DESCRIPTOR.message_types_by_name['GetWordReq'] = _GETWORDREQ
 DESCRIPTOR.message_types_by_name['GetWordResp'] = _GETWORDRESP
+DESCRIPTOR.message_types_by_name['GetGameStateReq'] = _GETGAMESTATEREQ
+DESCRIPTOR.message_types_by_name['GetGameStateResp'] = _GETGAMESTATERESP
+DESCRIPTOR.message_types_by_name['JoinRoomReq'] = _JOINROOMREQ
+DESCRIPTOR.message_types_by_name['JoinRoomResp'] = _JOINROOMRESP
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 GetWordReq = _reflection.GeneratedProtocolMessageType('GetWordReq', (_message.Message,), {
@@ -113,6 +252,34 @@ GetWordResp = _reflection.GeneratedProtocolMessageType('GetWordResp', (_message.
   })
 _sym_db.RegisterMessage(GetWordResp)
 
+GetGameStateReq = _reflection.GeneratedProtocolMessageType('GetGameStateReq', (_message.Message,), {
+  'DESCRIPTOR' : _GETGAMESTATEREQ,
+  '__module__' : 'proto.baddle_pb2'
+  # @@protoc_insertion_point(class_scope:GetGameStateReq)
+  })
+_sym_db.RegisterMessage(GetGameStateReq)
+
+GetGameStateResp = _reflection.GeneratedProtocolMessageType('GetGameStateResp', (_message.Message,), {
+  'DESCRIPTOR' : _GETGAMESTATERESP,
+  '__module__' : 'proto.baddle_pb2'
+  # @@protoc_insertion_point(class_scope:GetGameStateResp)
+  })
+_sym_db.RegisterMessage(GetGameStateResp)
+
+JoinRoomReq = _reflection.GeneratedProtocolMessageType('JoinRoomReq', (_message.Message,), {
+  'DESCRIPTOR' : _JOINROOMREQ,
+  '__module__' : 'proto.baddle_pb2'
+  # @@protoc_insertion_point(class_scope:JoinRoomReq)
+  })
+_sym_db.RegisterMessage(JoinRoomReq)
+
+JoinRoomResp = _reflection.GeneratedProtocolMessageType('JoinRoomResp', (_message.Message,), {
+  'DESCRIPTOR' : _JOINROOMRESP,
+  '__module__' : 'proto.baddle_pb2'
+  # @@protoc_insertion_point(class_scope:JoinRoomResp)
+  })
+_sym_db.RegisterMessage(JoinRoomResp)
+
 
 DESCRIPTOR._options = None
 
@@ -123,8 +290,8 @@ _BADDLE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=93,
-  serialized_end=139,
+  serialized_start=254,
+  serialized_end=394,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetWord',
@@ -133,6 +300,26 @@ _BADDLE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_GETWORDREQ,
     output_type=_GETWORDRESP,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetGameState',
+    full_name='Baddle.GetGameState',
+    index=1,
+    containing_service=None,
+    input_type=_GETGAMESTATEREQ,
+    output_type=_GETGAMESTATERESP,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='JoinRoom',
+    full_name='Baddle.JoinRoom',
+    index=2,
+    containing_service=None,
+    input_type=_JOINROOMREQ,
+    output_type=_JOINROOMRESP,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
