@@ -37,6 +37,13 @@ class BaddleServer(TwirpServer):
 				input=_sym_db.GetSymbol("JoinRoomReq"),
 				output=_sym_db.GetSymbol("JoinRoomResp"),
 			),
+			"Lose": Endpoint(
+				service_name="Baddle",
+				name="Lose",
+				function=getattr(service, "Lose"),
+				input=_sym_db.GetSymbol("LoseReq"),
+				output=_sym_db.GetSymbol("LoseResp"),
+			),
 		}
 
 class BaddleClient(TwirpClient):
@@ -65,5 +72,14 @@ class BaddleClient(TwirpClient):
 			ctx=ctx,
 			request=request,
 			response_obj=_sym_db.GetSymbol("JoinRoomResp"),
+			**kwargs,
+		)
+
+	def Lose(self, *args, ctx, request, server_path_prefix="/twirp", **kwargs):
+		return self._make_request(
+			url=F"{server_path_prefix}/Baddle/Lose",
+			ctx=ctx,
+			request=request,
+			response_obj=_sym_db.GetSymbol("LoseResp"),
 			**kwargs,
 		)

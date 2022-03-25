@@ -44,6 +44,8 @@ type Baddle interface {
 	GetGameState(context.Context, *GetGameStateReq) (*GetGameStateResp, error)
 
 	JoinRoom(context.Context, *JoinRoomReq) (*JoinRoomResp, error)
+
+	Lose(context.Context, *LoseReq) (*LoseResp, error)
 }
 
 // ======================
@@ -52,7 +54,7 @@ type Baddle interface {
 
 type baddleProtobufClient struct {
 	client      HTTPClient
-	urls        [3]string
+	urls        [4]string
 	interceptor twirp.Interceptor
 	opts        twirp.ClientOptions
 }
@@ -72,10 +74,11 @@ func NewBaddleProtobufClient(baseURL string, client HTTPClient, opts ...twirp.Cl
 	// Build method URLs: <baseURL>[<prefix>]/<package>.<Service>/<Method>
 	serviceURL := sanitizeBaseURL(baseURL)
 	serviceURL += baseServicePath(clientOpts.PathPrefix(), "", "Baddle")
-	urls := [3]string{
+	urls := [4]string{
 		serviceURL + "GetWord",
 		serviceURL + "GetGameState",
 		serviceURL + "JoinRoom",
+		serviceURL + "Lose",
 	}
 
 	return &baddleProtobufClient{
@@ -224,13 +227,59 @@ func (c *baddleProtobufClient) callJoinRoom(ctx context.Context, in *JoinRoomReq
 	return out, nil
 }
 
+func (c *baddleProtobufClient) Lose(ctx context.Context, in *LoseReq) (*LoseResp, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "")
+	ctx = ctxsetters.WithServiceName(ctx, "Baddle")
+	ctx = ctxsetters.WithMethodName(ctx, "Lose")
+	caller := c.callLose
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *LoseReq) (*LoseResp, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*LoseReq)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*LoseReq) when calling interceptor")
+					}
+					return c.callLose(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*LoseResp)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*LoseResp) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *baddleProtobufClient) callLose(ctx context.Context, in *LoseReq) (*LoseResp, error) {
+	out := new(LoseResp)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[3], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
 // ==================
 // Baddle JSON Client
 // ==================
 
 type baddleJSONClient struct {
 	client      HTTPClient
-	urls        [3]string
+	urls        [4]string
 	interceptor twirp.Interceptor
 	opts        twirp.ClientOptions
 }
@@ -250,10 +299,11 @@ func NewBaddleJSONClient(baseURL string, client HTTPClient, opts ...twirp.Client
 	// Build method URLs: <baseURL>[<prefix>]/<package>.<Service>/<Method>
 	serviceURL := sanitizeBaseURL(baseURL)
 	serviceURL += baseServicePath(clientOpts.PathPrefix(), "", "Baddle")
-	urls := [3]string{
+	urls := [4]string{
 		serviceURL + "GetWord",
 		serviceURL + "GetGameState",
 		serviceURL + "JoinRoom",
+		serviceURL + "Lose",
 	}
 
 	return &baddleJSONClient{
@@ -402,6 +452,52 @@ func (c *baddleJSONClient) callJoinRoom(ctx context.Context, in *JoinRoomReq) (*
 	return out, nil
 }
 
+func (c *baddleJSONClient) Lose(ctx context.Context, in *LoseReq) (*LoseResp, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "")
+	ctx = ctxsetters.WithServiceName(ctx, "Baddle")
+	ctx = ctxsetters.WithMethodName(ctx, "Lose")
+	caller := c.callLose
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *LoseReq) (*LoseResp, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*LoseReq)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*LoseReq) when calling interceptor")
+					}
+					return c.callLose(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*LoseResp)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*LoseResp) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *baddleJSONClient) callLose(ctx context.Context, in *LoseReq) (*LoseResp, error) {
+	out := new(LoseResp)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[3], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
 // =====================
 // Baddle Server Handler
 // =====================
@@ -507,6 +603,9 @@ func (s *baddleServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		return
 	case "JoinRoom":
 		s.serveJoinRoom(ctx, resp, req)
+		return
+	case "Lose":
+		s.serveLose(ctx, resp, req)
 		return
 	default:
 		msg := fmt.Sprintf("no handler for path %q", req.URL.Path)
@@ -1032,6 +1131,186 @@ func (s *baddleServer) serveJoinRoomProtobuf(ctx context.Context, resp http.Resp
 	}
 	if respContent == nil {
 		s.writeError(ctx, resp, twirp.InternalError("received a nil *JoinRoomResp and nil error while calling JoinRoom. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *baddleServer) serveLose(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveLoseJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveLoseProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *baddleServer) serveLoseJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "Lose")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	d := json.NewDecoder(req.Body)
+	rawReqBody := json.RawMessage{}
+	if err := d.Decode(&rawReqBody); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+	reqContent := new(LoseReq)
+	unmarshaler := protojson.UnmarshalOptions{DiscardUnknown: true}
+	if err = unmarshaler.Unmarshal(rawReqBody, reqContent); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+
+	handler := s.Baddle.Lose
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *LoseReq) (*LoseResp, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*LoseReq)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*LoseReq) when calling interceptor")
+					}
+					return s.Baddle.Lose(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*LoseResp)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*LoseResp) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *LoseResp
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *LoseResp and nil error while calling Lose. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	marshaler := &protojson.MarshalOptions{UseProtoNames: true, EmitUnpopulated: !s.jsonSkipDefaults}
+	respBytes, err := marshaler.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *baddleServer) serveLoseProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "Lose")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		s.handleRequestBodyError(ctx, resp, "failed to read request body", err)
+		return
+	}
+	reqContent := new(LoseReq)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Baddle.Lose
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *LoseReq) (*LoseResp, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*LoseReq)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*LoseReq) when calling interceptor")
+					}
+					return s.Baddle.Lose(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*LoseResp)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*LoseResp) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *LoseResp
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *LoseResp and nil error while calling Lose. nil responses are not supported"))
 		return
 	}
 
@@ -1622,22 +1901,24 @@ func callClientError(ctx context.Context, h *twirp.ClientHooks, err twirp.Error)
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 258 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x51, 0x3d, 0x4f, 0xc3, 0x40,
-	0x0c, 0x55, 0xf8, 0x68, 0xa9, 0x13, 0xa0, 0x78, 0x40, 0x51, 0x26, 0x88, 0x90, 0xe8, 0xe4, 0x4a,
-	0x14, 0x24, 0x58, 0xcb, 0x10, 0x09, 0x31, 0x85, 0x01, 0x89, 0xa5, 0x4a, 0x1b, 0x0f, 0x48, 0x4d,
-	0x6c, 0xee, 0x0e, 0xf1, 0x27, 0xf8, 0xd1, 0xe8, 0x02, 0xa1, 0x81, 0x4e, 0xd9, 0xde, 0xd9, 0xf7,
-	0xec, 0xf7, 0x9e, 0x01, 0xd5, 0x88, 0x93, 0xe9, 0xb2, 0x28, 0xcb, 0x35, 0x53, 0xf3, 0x48, 0xaf,
-	0x01, 0x32, 0x76, 0xcf, 0x62, 0xca, 0x9c, 0xdf, 0x10, 0x61, 0xef, 0xdd, 0xb2, 0x89, 0x83, 0xb3,
-	0x60, 0x32, 0xca, 0x1b, 0xec, 0x6b, 0x46, 0xa4, 0x8a, 0x77, 0xbe, 0x6b, 0x1e, 0xa7, 0xe7, 0x10,
-	0xfe, 0xb2, 0xac, 0xfa, 0x2f, 0x1f, 0x62, 0xca, 0x96, 0xe6, 0x71, 0x7a, 0x07, 0xc7, 0x19, 0xbb,
-	0xac, 0xa8, 0xf8, 0xc9, 0x15, 0x8e, 0xfb, 0x4c, 0x7f, 0x84, 0xf1, 0x5f, 0xaa, 0x55, 0xbc, 0x85,
-	0x58, 0x54, 0xa5, 0xe6, 0xda, 0x2d, 0xfc, 0x7c, 0xbb, 0x58, 0x49, 0xa5, 0x6b, 0x76, 0xec, 0xd7,
-	0xee, 0x4e, 0x46, 0xf9, 0x69, 0xdb, 0xf7, 0xb2, 0xec, 0x7d, 0xdb, 0x4d, 0x6f, 0x20, 0x7c, 0x90,
-	0xd7, 0x3a, 0x17, 0xa9, 0xfa, 0x88, 0x38, 0x82, 0x68, 0x43, 0xb3, 0x7a, 0xf5, 0x19, 0xc0, 0x60,
-	0xde, 0x24, 0x87, 0x17, 0x30, 0xfc, 0x71, 0x8f, 0x21, 0x6d, 0xd2, 0x4b, 0x22, 0xea, 0x86, 0x32,
-	0x83, 0xa8, 0xeb, 0x02, 0xc7, 0xf4, 0x2f, 0x8f, 0xe4, 0x84, 0xb6, 0x6c, 0x5e, 0xc2, 0x41, 0xbb,
-	0x15, 0x23, 0xea, 0xe8, 0x4e, 0x0e, 0xa9, 0x2b, 0x67, 0x3e, 0x7c, 0xd9, 0xa7, 0xa9, 0xd1, 0xd5,
-	0x72, 0xd0, 0xdc, 0x71, 0xf6, 0x15, 0x00, 0x00, 0xff, 0xff, 0x7c, 0xf3, 0xca, 0x7c, 0xdd, 0x01,
-	0x00, 0x00,
+	// 300 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0xc1, 0x4e, 0x83, 0x40,
+	0x10, 0x4d, 0xb5, 0x16, 0x3a, 0xa0, 0xd6, 0x3d, 0x28, 0xc1, 0x8b, 0x12, 0x13, 0x7b, 0xda, 0x46,
+	0xab, 0x89, 0x5e, 0xeb, 0x81, 0xc4, 0xf4, 0x84, 0x07, 0x13, 0x2f, 0x84, 0x96, 0x39, 0x90, 0x00,
+	0xb3, 0xee, 0xac, 0xf1, 0x9b, 0xfc, 0x4b, 0xb3, 0xb4, 0x58, 0xd4, 0x13, 0xb7, 0xc7, 0x0c, 0x6f,
+	0xe6, 0xbd, 0x37, 0x0b, 0x42, 0x69, 0x32, 0x34, 0x5b, 0x65, 0x79, 0x5e, 0xa2, 0x6c, 0x3e, 0xa2,
+	0x3b, 0x80, 0x18, 0xcd, 0x2b, 0xe9, 0x3c, 0xc1, 0x77, 0x21, 0x60, 0xf8, 0xc1, 0xa8, 0x83, 0xc1,
+	0xc5, 0x60, 0x3a, 0x4e, 0x1a, 0x6c, 0x6b, 0x9a, 0xa8, 0x0a, 0xf6, 0x36, 0x35, 0x8b, 0xa3, 0x4b,
+	0xf0, 0x7e, 0x58, 0xac, 0xec, 0x2f, 0x9f, 0xa4, 0xf3, 0x96, 0x66, 0x71, 0xf4, 0x08, 0xc7, 0x31,
+	0x9a, 0x38, 0xab, 0xf0, 0xc5, 0x64, 0x06, 0xfb, 0x4c, 0x47, 0x98, 0xfc, 0xa6, 0xb2, 0x12, 0x0f,
+	0x10, 0x90, 0x52, 0x54, 0x63, 0x6d, 0x52, 0x3b, 0x9f, 0xd3, 0x35, 0x55, 0xaa, 0x44, 0x83, 0x76,
+	0xed, 0xfe, 0x74, 0x9c, 0x9c, 0xb6, 0x7d, 0x2b, 0x8b, 0x9f, 0xda, 0xae, 0x38, 0x03, 0xa7, 0xe0,
+	0xb4, 0x24, 0x36, 0xcd, 0x12, 0x37, 0x19, 0x15, 0xbc, 0x24, 0x36, 0xd1, 0x3d, 0x78, 0xcf, 0x54,
+	0xd4, 0x09, 0x51, 0xd5, 0x47, 0xdd, 0x11, 0xf8, 0x3b, 0x1a, 0xab, 0xe8, 0x06, 0x9c, 0x25, 0x71,
+	0x2f, 0x83, 0x00, 0xee, 0x86, 0xc2, 0xea, 0xf6, 0x6b, 0x00, 0xa3, 0x45, 0x73, 0x11, 0x71, 0x05,
+	0xce, 0x36, 0x55, 0xe1, 0xc9, 0xdd, 0x55, 0x42, 0x5f, 0x76, 0xc3, 0x9e, 0x83, 0xdf, 0x4d, 0x47,
+	0x4c, 0xe4, 0x9f, 0x9c, 0xc3, 0x13, 0xf9, 0x2f, 0xbe, 0x6b, 0x70, 0x5b, 0xd1, 0xc2, 0x97, 0x1d,
+	0xdb, 0xe1, 0xa1, 0xec, 0xba, 0x11, 0xe7, 0x30, 0xb4, 0xd2, 0x84, 0x2b, 0xb7, 0xa6, 0xc2, 0xb1,
+	0x6c, 0xb5, 0x2e, 0x9c, 0xb7, 0x03, 0x39, 0xd3, 0x6a, 0xbd, 0x1a, 0x35, 0x8f, 0x67, 0xfe, 0x1d,
+	0x00, 0x00, 0xff, 0xff, 0x9d, 0x39, 0x7d, 0x2d, 0x52, 0x02, 0x00, 0x00,
 }
