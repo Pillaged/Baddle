@@ -47,3 +47,9 @@ def join_room(user_id, rm_num):
         return response
     except TwirpServerException as e:
         print(e.code, e.message, e.meta, e.to_dict())
+
+get_word("1","1")
+join_room("1","1")
+send_loss("1")
+game_state_req("1","1")
+print(client)
