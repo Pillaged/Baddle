@@ -4,6 +4,10 @@ from random import choice
 from tkinter import *
 from tkinter.font import Font
 from time import sleep
+import twirp_example as tp
+import asyncio
+
+# import twirp_reqs
 
 
 class Wordle:
@@ -59,6 +63,8 @@ class Wordle:
         self.game_on = True
         self.delay = 0.05
         self.monay = 0
+        self.room = "1234"
+        self.player_name = input("Input your name")
 
     def power_up_menu(self):
         self.power_keys = ["1", "2", "3", "4", "5"]
@@ -228,7 +234,7 @@ class Wordle:
                 self.keyboard_dict[key] = {"r": r, "i": i}
                 self.create_kb_key(key, self.color_kb)
 
-    def kb_input(self, event=None, letter=None):
+    async def kb_input(self, event=None, letter=None):
         if self.game_on:
             if letter is None:
                 print(type(event), event.char.upper(), "This is the test line")
@@ -253,7 +259,7 @@ class Wordle:
                 self.column_counter += 1
 
     # delete letters
-    def kb_delete(self, event):
+    async def kb_delete(self, event):
         if self.game_on:
             if self.column_counter == 0:
                 return
@@ -265,7 +271,7 @@ class Wordle:
                 del_pos_x, del_pos_y, self.box_width, self.box_height, self.color_empty
             )
 
-    def kb_enter(self, event):
+    async def kb_enter(self, event):
         if self.guess in self.words:
             if self.game_on:
                 if self.column_counter == 5 and self.row_counter == self.max_rows:
@@ -280,7 +286,6 @@ class Wordle:
                     self.column_counter = 0
         else:
             self.top_text(self.invalid_message, "black")
-            # sleep(0.5)
             self.root.update()
             self.delete_top_text()
             sleep(1)
@@ -583,6 +588,10 @@ class Wordle:
         )
         self.canvas.tag_bind("⌫", "<Button-1>", lambda e, var="⌫": self.kb_delete(var))
 
+    # async def serv_updates():
+    # twirp_reqs.game_state_req(self.room, self.playernum)
+
 
 baddle = Wordle(600, 700)
+
 baddle.generate_gui("new")
