@@ -23,13 +23,7 @@ def get_word(user_id, rm_num):
 
 def send_loss(rm_num):
     try:
-<<<<<<< HEAD
         response = client.Lose(ctx=Context(), request=baddle_pb2.LoseReq(room=rm_num))
-=======
-        response = client.Lose(
-            ctx=Context(), request=baddle_pb2.LoseReq(room=rm_num)
-        )
->>>>>>> a75221bfb03aa2ccd7a52468bf20648a61144604
         print(response)
         return response
     except TwirpServerException as e:
