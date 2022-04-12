@@ -20,9 +20,7 @@ def get_word(user_id, rm_num):
 
 def send_loss(rm_num):
     try:
-        response = client.Lose(
-            ctx=Context(), request=baddle_pb2.LoseReq(room=rm_num)
-        )
+        response = client.Lose(ctx=Context(), request=baddle_pb2.LoseReq(room=rm_num))
         print(response)
         return response
     except TwirpServerException as e:
@@ -39,7 +37,8 @@ def game_state_req(user_id, rm_num):
     except TwirpServerException as e:
         print(e.code, e.message, e.meta, e.to_dict())
 
-def join_room(user_id, rm_num):
+
+def join_room(rm_num, user_id):
     try:
         response = client.JoinRoom(
             ctx=Context(), request=baddle_pb2.JoinRoomReq(user=user_id, room=rm_num)
@@ -49,8 +48,9 @@ def join_room(user_id, rm_num):
     except TwirpServerException as e:
         print(e.code, e.message, e.meta, e.to_dict())
 
-get_word("1","1")
-join_room("1","1")
+
+get_word("1", "1")
+join_room("1", "1")
 send_loss("1")
-game_state_req("1","1")
+game_state_req("1", "1")
 print(client)

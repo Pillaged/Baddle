@@ -6,8 +6,7 @@ from tkinter.font import Font
 from time import sleep
 import twirp_example as tp
 import asyncio
-
-# import twirp_reqs
+import twirp_reqs
 
 
 class Wordle:
@@ -55,16 +54,16 @@ class Wordle:
         self.kb_column_counter = 0
         self.game_language = "en"
         self.max_rows = 14  # Number of times allowed to guess a word
-        self.end_game_words = ["Good job.", "Well done!", "W.O.W."]
-        with open("word_list.txt", "r", encoding="utf-8") as a:
-            self.words = [unidecode(x.upper()) for x in a.read().split(" ")]
-        self.word = choice(self.words)
+        self.end_game_words = ["Good job.", "Well done!", "W.O.W.", "You're stellar."]
+        # with open("word_list.txt", "r", encoding="utf-8") as a:
+        #    self.words = [unidecode(x.upper()) for x in a.read().split(" ")]
         self.invalid_message = "Not in word list"
         self.game_on = True
         self.delay = 0.05
         self.monay = 0
         self.room = "1234"
-        self.player_name = input("Input your name")
+        self.player_name = input("Input your name: ")
+        self.word = twirp_reqs.get_word(self.player_name, self.room)
 
     def power_up_menu(self):
         self.power_keys = ["1", "2", "3", "4", "5"]
@@ -104,28 +103,32 @@ class Wordle:
             add=True,
         )
 
+    def less_line(self):
+        self.max_rows -= 1
+        for ij in range(5):
+            self.canvas.create_rectangle(
+                self.pos_x + (self.box_width + self.gap) * ij,
+                self.pos_y
+                + self.box_height
+                + ((self.gap + self.box_height) * (self.max_rows + 1)),
+                self.pos_x + (self.box_width + self.gap) * (ij + 1) - self.gap,
+                self.pos_y
+                + self.box_height
+                - self.gap
+                + ((self.gap + self.box_height) * (self.max_rows))
+                + 4,
+                outline="black",
+                fill="dark grey",
+            )
+
     def powerups(self, numb, coinage=4000):
         if numb == 1 and coinage > 200:  # Please change this to opponent, not self.
             if self.max_rows > self.row_counter:
-                self.max_rows -= 1
                 print("num lines to use is now: ", self.max_rows)
                 self.monay -= 200
                 print(self.monay, "left in your wallet.")
-                for ij in range(5):
-                    self.canvas.create_rectangle(
-                        self.pos_x + (self.box_width + self.gap) * ij,
-                        self.pos_y
-                        + self.box_height
-                        + ((self.gap + self.box_height) * (self.max_rows + 1)),
-                        self.pos_x + (self.box_width + self.gap) * (ij + 1) - self.gap,
-                        self.pos_y
-                        + self.box_height
-                        - self.gap
-                        + ((self.gap + self.box_height) * (self.max_rows))
-                        + 4,
-                        outline="black",
-                        fill="dark grey",
-                    )
+                self.less_line()
+
         elif numb == 2 and coinage > 200:  # Slow down answer getting.
             self.delay *= abs((1 + (0.05 / exp(self.delay))))
             print("delay is now set to: ", self.delay)
@@ -165,7 +168,7 @@ class Wordle:
             self.row_counter = 0
             self.column_counter = 0
             self.kb_row_counter = 0
-            self.word = choice(self.words)
+            self.word = twirp_reqs.get_word(self.player_name, self.room)
             self.root.update()
         self.create_letter_boxes()
         self.special_keys()
@@ -280,6 +283,7 @@ class Wordle:
                     if self.row_counter >= self.max_rows:
                         self.top_text(self.word, self.color_end_box)
                         self.game_on = False
+                        twirp_reqs.send_loss(self.room)
                 elif self.column_counter == 5:
                     #             print(guess)
                     self.check_guess()
@@ -588,10 +592,16 @@ class Wordle:
         )
         self.canvas.tag_bind("⌫", "<Button-1>", lambda e, var="⌫": self.kb_delete(var))
 
-    # async def serv_updates():
-    # twirp_reqs.game_state_req(self.room, self.playernum)
+    async def serv_updates(self):
+        while self.game_on == True:
+            upsidatesi = twirp_reqs.game_state_req(self.room, self.player_name)
+            if upsidatesi.is_lost == True:
+                self.game_on = False
+            if len(upsidatesi.opponent_words_completed) >= 0:
+                self.less_line()
+            await sleep(0.5)
 
 
 baddle = Wordle(600, 700)
-
+twirp_reqs.join_room(baddle.room, baddle.player_name)
 baddle.generate_gui("new")
