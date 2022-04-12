@@ -6,6 +6,7 @@ from proto import baddle_twirp, baddle_pb2
 
 client = baddle_twirp.BaddleClient("http://localhost:2441")
 
+
 def get_word(user_id, rm_num):
     try:
         response = client.GetWord(
@@ -35,8 +36,7 @@ def game_state_req(user_id, rm_num):
         return response
     except TwirpServerException as e:
         print(e.code, e.message, e.meta, e.to_dict())
-<<<<<<< HEAD
-=======
+
 
 def join_room(user_id, rm_num):
     try:
@@ -48,9 +48,9 @@ def join_room(user_id, rm_num):
     except TwirpServerException as e:
         print(e.code, e.message, e.meta, e.to_dict())
 
-get_word("1","1")
-join_room("1","1")
+
+get_word("1", "1")
+join_room("1", "1")
 send_loss("1")
-game_state_req("1","1")
+game_state_req("1", "1")
 print(client)
->>>>>>> a75221bfb03aa2ccd7a52468bf20648a61144604
