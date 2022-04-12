@@ -6,10 +6,6 @@ from proto import baddle_twirp, baddle_pb2
 
 client = baddle_twirp.BaddleClient("http://localhost:2441")
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a75221bfb03aa2ccd7a52468bf20648a61144604
 def get_word(user_id, rm_num):
     try:
         response = client.GetWord(
