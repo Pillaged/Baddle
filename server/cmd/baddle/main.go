@@ -47,5 +47,7 @@ func main() {
 
 	if err := http.ListenAndServe(":2441", server); err != nil {
 		println(err.Error())
+
 	}
+	log.Println("Your server is now running.")
 }

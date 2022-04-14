@@ -40,6 +40,7 @@ func (g *Game) CreateRoom(roomId string) *Room {
 
 	if g.rooms[roomId] == nil {
 		g.rooms[roomId] = &Room{}
+		//log.Println("Room created in spot: ", roomId
 	}
 	return g.rooms[roomId]
 }
@@ -93,7 +94,7 @@ func (g *Game) Lose(roomId string, userId string) error {
 	room.lock.Lock()
 	room.lock.Unlock()
 
-	room.playerLost = true
+	room.playerLost = true //Need to delete room? Or need to make new request to start a game in the same room.
 	return nil
 }
 

@@ -1,10 +1,9 @@
 from cmath import e, exp
 from unidecode import unidecode
-from random import choice
+from random import choice, randint
 from tkinter import *
 from tkinter.font import Font
 from time import sleep
-import twirp_example as tp
 import asyncio
 import twirp_reqs
 
@@ -55,14 +54,15 @@ class Wordle:
         self.game_language = "en"
         self.max_rows = 14  # Number of times allowed to guess a word
         self.end_game_words = ["Good job.", "Well done!", "W.O.W.", "You're stellar."]
-        # with open("word_list.txt", "r", encoding="utf-8") as a:
-        #    self.words = [unidecode(x.upper()) for x in a.read().split(" ")]
+        with open("word_list.txt", "r", encoding="utf-8") as a:
+            self.words = [unidecode(x.upper()) for x in a.read().split(" ")]
         self.invalid_message = "Not in word list"
         self.game_on = True
         self.delay = 0.05
         self.monay = 0
-        self.room = "1234"
+        self.room = str(randint(1, 50))
         self.player_name = input("Input your name: ")
+        twirp_reqs.join_room(self.room, self.player_name)
         self.word = twirp_reqs.get_word(self.player_name, self.room)
 
     def power_up_menu(self):
@@ -95,7 +95,6 @@ class Wordle:
             fill="white",
             tag="pows" + str(letter),
         )
-        print("pows" + str(letter))
         self.canvas.tag_bind(
             ("pows" + str(letter)),
             "<Button-1>",
@@ -169,6 +168,7 @@ class Wordle:
             self.column_counter = 0
             self.kb_row_counter = 0
             self.word = twirp_reqs.get_word(self.player_name, self.room)
+            self.serv_updates()
             self.root.update()
         self.create_letter_boxes()
         self.special_keys()
@@ -194,15 +194,6 @@ class Wordle:
             font=(self.font, int(self.kb_box_height * 0.4)),
             fill="white",
         )
-        print(
-            self.word,
-            self.pos_y,
-            self.gap,
-            self.box_height,
-            self.row_counter,
-            self.box_height,
-        )
-        print(self.new_pos_y, self.kb_new_pos_y)
         if age == "new":
             self.root.mainloop()
 
@@ -237,7 +228,8 @@ class Wordle:
                 self.keyboard_dict[key] = {"r": r, "i": i}
                 self.create_kb_key(key, self.color_kb)
 
-    async def kb_input(self, event=None, letter=None):
+    def kb_input(self, event=None, letter=None):
+        self.serv_updates()
         if self.game_on:
             if letter is None:
                 print(type(event), event.char.upper(), "This is the test line")
@@ -262,7 +254,8 @@ class Wordle:
                 self.column_counter += 1
 
     # delete letters
-    async def kb_delete(self, event):
+    def kb_delete(self, event):
+        self.serv_updates()
         if self.game_on:
             if self.column_counter == 0:
                 return
@@ -274,7 +267,7 @@ class Wordle:
                 del_pos_x, del_pos_y, self.box_width, self.box_height, self.color_empty
             )
 
-    async def kb_enter(self, event):
+    def kb_enter(self, event):
         if self.guess in self.words:
             if self.game_on:
                 if self.column_counter == 5 and self.row_counter == self.max_rows:
@@ -298,6 +291,7 @@ class Wordle:
             return
 
     def check_guess(self):
+        self.serv_updates()
         if self.guess == self.word:
             for i, v in enumerate(self.guess):
                 if v == self.word[i]:  # letters in a correct position
@@ -592,16 +586,18 @@ class Wordle:
         )
         self.canvas.tag_bind("⌫", "<Button-1>", lambda e, var="⌫": self.kb_delete(var))
 
-    async def serv_updates(self):
-        while self.game_on == True:
-            upsidatesi = twirp_reqs.game_state_req(self.room, self.player_name)
-            if upsidatesi.is_lost == True:
-                self.game_on = False
-            if len(upsidatesi.opponent_words_completed) >= 0:
-                self.less_line()
-            await sleep(0.5)
+    def serv_updates(self):
+        upsidatesi = twirp_reqs.game_state_req(self.room, self.player_name)
+        print(type(upsidatesi), "UPSIDATESI")
+        if upsidatesi == True:
+            self.game_on = False
+        if len(upsidatesi) >= 0:
+            self.less_line()
 
 
 baddle = Wordle(600, 700)
-twirp_reqs.join_room(baddle.room, baddle.player_name)
+
 baddle.generate_gui("new")
+
+# if baddle.game_on == False:
+# twirp_reqs.close_room(baddle.room, baddle.player_name)
